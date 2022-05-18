@@ -18,35 +18,28 @@ exports.getStudents = (req,res,next)=>{
 }
 
 exports.postStudents = (req,res,next)=>{
-    const student = new Student(req.body.id,req.body.name);
-    student.save();
-    res.redirect('/students');
+    Student.show(students=>{
+        const student = new Student(students.length>0 ? students[students.length-1].id+1 : 0,req.body.name);
+        student.save();
+        res.redirect('/students');
+    });
+    //ha ide is berakom a Student.show-t megint egyel kesobbit ir ki
+    //de ha redirectelem akkor jol irja ki. miert? mi az isten ez az egyel kesobbi kiiras tema?
+
 }
 
 
 exports.deleteStudents = (req,res,next)=>{
-    console.log("4");
-    const id = req.body.id;
-    const p = path.join(path.dirname(require.main.filename),'data','students.json');
-
-    const found = studentsJSON.some(s =>s.id === Number(id));
-    if(found){
-        studentsJSON.splice(id,1)
-        fs.writeFile(p,JSON.stringify(studentsJSON),(err)=>console.log(err));
-    }
-    return res.send(studentsJSON);
+    Student.deleteById(req.body.id,students=>res.send(students));
 }
 
 exports.putStudents = (req,res,next)=>{
-    console.log("5");
-    console.log(req.body);
-    Student.editById(req.body.id,req.body.name);
-    res.send(Student.show());
+    Student.editById(req.body.id,req.body.name,students=>res.send(students));
 }
 
+//GET with params
 exports.getStudentsById = (req,res,next)=>{
-    console.log("6");
-    res.send(Student.findById(req.params.id));
+    Student.findById(req.params.id,students=>res.send(students[req.params.id].name));
 }
 
 

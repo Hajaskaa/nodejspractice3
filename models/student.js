@@ -33,53 +33,48 @@ module.exports = class Student {
     }
 
     save() {
-        /*students.push(this);
-        
-        fs.readFile(p, (err,fileContent) => {
-            let students = [];
-            if (!err) {
-                //console.log(fileContent);
-                students = JSON.parse(fileContent);
-            }
-            students.push(this);
-            fs.writeFile(p, JSON.stringify(students),(err)=>{
-               // console.log(err);
-            })
-        });*/
         getStudentsFromFile(students =>{
             students.push(this);
             console.log('students:',students);
             fs.writeFile(p, JSON.stringify(students),err=>console.log('Error: ',err));
-        });
-
+        })
     }
 
     static show(cb) {
         getStudentsFromFile(cb);
-       /* fs.readFile(p, (err, fileContent) => {
-            if (!err) {
-                students = JSON.parse(fileContent);
-                response.send(students)
-            }
-        });
-        return getStudentsFromFile();*/
     }
     
-    static findById (id) {
-    /*const students = getStudentsFromFile();
-    console.log(students);
-    const found = students.some(s =>s.id === Number(id));
-        if(found){
-            console.log(students[id].name);
-            return students[id].name;
-        }*/
+    static findById (id,cb) {
+        getStudentsFromFile(students=>{
+            const found = students.some(s =>s.id === Number(id));
+            if(found) cb(students);
+        })
 
     }
 
-    static editById(id,name){ 
-        console.log('asd');
-        const students = getStudentsFromFile();
-        students.findById(id) = name;
-        fs.writeFile(p,JSON.stringify(students),(err)=>console.log(err));
+    static editById(id,name,cb){ 
+        getStudentsFromFile(students=>{
+            const found = students.some(s =>s.id === Number(id));
+            console.log(found);
+            if(found){
+                students[id].name = name; 
+                fs.writeFile(p,JSON.stringify(students),(err)=>console.log('Error::',err));
+                console.log('studentsASD:',students);
+            }
+            cb(students);
+        })
+        //this.findById(id,students=>fs.writeFile(p,JSON.stringify(),(err)=>console.log(err)));
+        //fs.writeFile(p,JSON.stringify(),(err)=>console.log(err));
+    }
+
+    static deleteById(id,cb){
+        getStudentsFromFile(students=>{
+            const found = students.some(s =>s.id === Number(id));
+            if(found){
+                students.splice(id,1)
+                fs.writeFile(p,JSON.stringify(students),(err)=>console.log('Error: ',err));
+            }
+            cb(students);
+        })
     }
 }
