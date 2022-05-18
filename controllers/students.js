@@ -11,17 +11,16 @@ exports.getMain = (req,res,next)=>{
 }
 
 exports.getStudents = (req,res,next)=>{
-    console.log("2");
-    let asd = Student.show();
-    console.log('asd:',asd);
-    res.send(asd);
+    Student.show(students=>{
+        res.send(students);
+    });
+    //.then((students)=>res.send(students));
 }
 
 exports.postStudents = (req,res,next)=>{
-    console.log("3");
-    const student = new Student(studentsJSON.length>0 ? studentsJSON[studentsJSON.length-1].id+1 : 0,req.body.name);
+    const student = new Student(req.body.id,req.body.name);
     student.save();
-    return res.send(studentsJSON);
+    res.redirect('/students');
 }
 
 
@@ -45,7 +44,7 @@ exports.putStudents = (req,res,next)=>{
     res.send(Student.show());
 }
 
-exports.getStudentById = (req,res,next)=>{
+exports.getStudentsById = (req,res,next)=>{
     console.log("6");
     res.send(Student.findById(req.params.id));
 }

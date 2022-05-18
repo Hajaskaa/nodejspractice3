@@ -7,17 +7,22 @@ const path = require('path');
 const p = path.join(
     path.dirname(require.main.filename),'data','students.json');
 
-const getStudentsFromFile = () => {
-    //students.push(this);
-    fs.readFile(p, (err,fileContent) => {
-        let students = [];
+/*const getStudentsFromFile = () => {
+    let students = [];
+    fs.readFile(p, (err, fileContent) => {
         if (!err) {
-            //console.log(fileContent);
             students = JSON.parse(fileContent);
         }
-        //console.log(JSON.stringify(students));
-        console.log(students[1]);
-        return students;
+    });
+    console.log(typeof students);
+    return students;
+
+}*/
+
+function getStudentsFromFile(cb) {//own callback pass for async
+    fs.readFile(p, (err, fileContent) => {
+        if (err) cb([]);
+        else cb(JSON.parse(fileContent));
     });
 }
 
@@ -28,7 +33,7 @@ module.exports = class Student {
     }
 
     save() {
-        //students.push(this);
+        /*students.push(this);
         
         fs.readFile(p, (err,fileContent) => {
             let students = [];
@@ -40,23 +45,35 @@ module.exports = class Student {
             fs.writeFile(p, JSON.stringify(students),(err)=>{
                // console.log(err);
             })
+        });*/
+        getStudentsFromFile(students =>{
+            students.push(this);
+            console.log('students:',students);
+            fs.writeFile(p, JSON.stringify(students),err=>console.log('Error: ',err));
         });
+
     }
 
-    static show(){
-        const arr = getStudentsFromFile();
-        console.log('arr: ',arr);
-        return getStudentsFromFile();
+    static show(cb) {
+        getStudentsFromFile(cb);
+       /* fs.readFile(p, (err, fileContent) => {
+            if (!err) {
+                students = JSON.parse(fileContent);
+                response.send(students)
+            }
+        });
+        return getStudentsFromFile();*/
     }
     
-    static findById(id){
-    const students = getStudentsFromFile();
+    static findById (id) {
+    /*const students = getStudentsFromFile();
     console.log(students);
     const found = students.some(s =>s.id === Number(id));
         if(found){
             console.log(students[id].name);
             return students[id].name;
-        }
+        }*/
+
     }
 
     static editById(id,name){ 

@@ -4,7 +4,6 @@ const express = require('express');
 const mainRoutes = require('./routes/index');
 const sideRoutes = require('./routes/side');
 const errorController = require('./controllers/error');
-const studentController = require('./controllers/students');
 
 
 const app = express();
